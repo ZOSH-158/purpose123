@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Jaan | ZOSH</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+        }
+        
+        :root {
+            --primary: #e84393;
+            --secondary: #fd79a8;
+            --accent: #6c5ce7;
+            --light: #ffeaa7;
+            --dark: #2d3436;
+            --text: #2d3436;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #a29bfe 0%, #fd79a8 100%);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding: 20px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        
+        .page.active {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .heart {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            transform: rotate(45deg);
+            opacity: 0.7;
+            animation: float 6s infinite ease-in-out;
+        }
+        
+        .heart:before, .heart:after {
+            content: '';
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            border-radius: 50%;
+            position: absolute;
+        }
+        
+        .heart:before {
+            top: -12px;
+            left: 0;
+        }
+        
+        .heart:after {
+            top: 0;
+            left: -12px;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(45deg); }
+            50% { transform: translateY(-25px) rotate(45deg); }
+        }
+        
+        h1 {
+            font-size: 3.8rem;
+            margin-bottom: 25px;
+            color: var(--primary);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+            font-weight: 700;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            margin: 30px 0 20px;
+            color: var(--accent);
+            position: relative;
+            z-index: 1;
+            font-weight: 600;
+        }
+        
+        p {
+            font-size: 1.3rem;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .couple-name {
+            font-size: 4.5rem;
+            color: var(--primary);
+            font-weight: 800;
+            margin: 35px 0;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .message {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 35px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            position: relative;
+            z-index: 1;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .proposal-box {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 35px;
+            border-radius: 20px;
+            margin: 45px 0;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .proposal-text {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+        
+        .signature {
+            font-size: 1.6rem;
+            font-style: italic;
+            margin-top: 35px;
+            text-align: right;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .memory-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            margin: 35px 0;
+        }
+        
+        .memory {
+            width: 280px;
+            min-height: 220px;
+            background: white;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            border: 3px solid var(--primary);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            padding: 20px;
+        }
+        
+        .memory:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .memory-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .memory-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+        
+        .memory-desc {
+            font-size: 1rem;
+            color: var(--text);
+            text-align: center;
+            line-height: 1.5;
+        }
+        
+        .buttons {
+            margin-top: 35px;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        button {
+            padding: 15px 35px;
+            font-size: 1.3rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .qabool-btn {
+            background: linear-gradient(135deg, #ff6b6b, #e84393);
+            color: white;
+            box-shadow: 0 8px 20px rgba(232, 67, 147, 0.4);
+            font-size: 1.8rem;
+            padding: 20px 50px;
+            animation: pulse-glow 2s infinite;
+        }
+        
+        .qabool-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 25px rgba(232, 67, 147, 0.6);
+        }
+        
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 15px rgba(232, 67, 147, 0.6); }
+            50% { box-shadow: 0 0 30px rgba(232, 67, 147, 0.9); }
+            100% { box-shadow: 0 0 15px rgba(232, 67, 147, 0.6); }
+        }
+        
+        .next-btn {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
+            margin-top: 25px;
+        }
+        
+        .next-btn:hover {
+            background: #5649c4;
+            transform: translateY(-5px);
+        }
+        
+        .footer {
+            margin-top: 45px;
+            font-size: 1.1rem;
+            color: var(--text);
+            opacity: 0.8;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .qabool-hai-container {
+            margin: 35px 0;
+        }
+        
+        .qabool-hai-text {
+            font-size: 2.8rem;
+            color: var(--primary);
+            font-weight: 800;
+            margin: 25px 0;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .ring-animation {
+            width: 180px;
+            height: 180px;
+            margin: 25px auto;
+            position: relative;
+        }
+        
+        .ring {
+            width: 100%;
+            height: 100%;
+            border: 6px solid var(--primary);
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: ringPulse 3s infinite;
+        }
+        
+        .ring:nth-child(2) {
+            animation-delay: 1s;
+        }
+        
+        .ring:nth-child(3) {
+            animation-delay: 2s;
+        }
+        
+        @keyframes ringPulse {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+        
+        .diamond {
+            width: 70px;
+            height: 70px;
+            background: white;
+            transform: rotate(45deg);
+            margin: 55px auto;
+            position: relative;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .diamond:before {
+            content: '';
+            width: 70px;
+            height: 70px;
+            background: white;
+            position: absolute;
+            top: -35px;
+            left: 0;
+            transform: rotate(45deg);
+        }
+        
+        .diamond:after {
+            content: '';
+            width: 70px;
+            height: 70px;
+            background: white;
+            position: absolute;
+            top: 0;
+            left: -35px;
+            transform: rotate(45deg);
+        }
+        
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            display: none;
+        }
+        
+        .celebration-heart {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            transform: rotate(45deg);
+            opacity: 0;
+            animation: celebrationFall 5s linear forwards;
+        }
+        
+        .celebration-heart:before, .celebration-heart:after {
+            content: '';
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            border-radius: 50%;
+            position: absolute;
+        }
+        
+        .celebration-heart:before {
+            top: -15px;
+            left: 0;
+        }
+        
+        .celebration-heart:after {
+            top: 0;
+            left: -15px;
+        }
+        
+        @keyframes celebrationFall {
+            0% { transform: translateY(-100px) rotate(45deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(45deg); opacity: 0; }
+        }
+        
+        .wife-text {
+            font-size: 3.5rem;
+            color: var(--primary);
+            font-weight: 800;
+            margin: 35px 0;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-35px); }
+            60% { transform: translateY(-20px); }
+        }
+        
+        .chat-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 30px auto;
+            background: #f0f0f0;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chat-bubble {
+            background: white;
+            border-radius: 20px;
+            padding: 15px 20px;
+            margin: 15px 0;
+            text-align: left;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            max-width: 80%;
+        }
+        
+        .chat-bubble.you {
+            background: var(--primary);
+            color: white;
+            margin-left: auto;
+        }
+        
+        .chat-bubble.her {
+            background: white;
+            color: var(--dark);
+        }
+        
+        .voice-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .voice-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: var(--primary);
+            width: 70%;
+            border-radius: 10px;
+            animation: voicePlay 2s infinite;
+        }
+        
+        @keyframes voicePlay {
+            0% { width: 30%; }
+            50% { width: 80%; }
+            100% { width: 30%; }
+        }
+        
+        .instagram-icon {
+            color: #E1306C;
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+        
+        .whatsapp-icon {
+            color: #25D366;
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+        
+        .social-message {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        
+        .task-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .task {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            border-left: 5px solid var(--accent);
+        }
+        
+        .task-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .task-desc {
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+        
+        .urdu-quote {
+            font-size: 1.8rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin: 20px 0;
+            font-style: italic;
+            direction: rtl;
+        }
+        
+        .urdu-translation {
+            font-size: 1.2rem;
+            color: var(--dark);
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .couple-name {
+                font-size: 3.2rem;
+            }
+            
+            .proposal-text {
+                font-size: 1.6rem;
+            }
+            
+            .container {
+                padding: 25px;
+            }
+            
+            .memory {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 250px;
+                justify-content: center;
+            }
+            
+            .qabool-btn {
+                font-size: 1.5rem;
+                padding: 15px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page 1: Introduction -->
+    <div class="page active" id="page1">
+        <div class="container">
+            <div class="hearts" id="hearts1"></div>
+            
+            <h1>For My Future Partner Natasha</h1>
+            
+            <div class="message">
+                <p>From our very first chat, I knew there was something special about you. Even though we've only talked online, your words have touched my heart in ways I never thought possible.</p>
+                
+                <p>Every message from you brightens my day, and your voice message yesterday made me realize how incredibly lucky I am to have you in my life.</p>
+            </div>
+            
+            <h2>Our Digital Love Story</h2>
+            
+            <div class="chat-container">
+                <div class="chat-bubble her">
+                    <div class="social-message">
+                        <i class="fab fa-instagram instagram-icon"></i>
+                        <strong>Natasha:</strong>
+                    </div>
+                    "I love our late night conversations on Instagram 💖"
+                </div>
+                
+                <div class="chat-bubble you">
+                    <div class="social-message">
+                        <i class="fab fa-whatsapp whatsapp-icon"></i>
+                        <strong>You:</strong>
+                    </div>
+                    "Your voice is the most beautiful sound I've ever heard"
+                </div>
+                
+                <div class="chat-bubble her">
+                    <div class="voice-message">
+                        <i class="fas fa-microphone voice-icon"></i>
+                        <div class="progress-bar">
+                            <div class="progress"></div>
+                        </div>
+                    </div>
+                    <div>Your first voice message to me</div>
+                </div>
+            </div>
+            
+            <button class="next-btn" onclick="nextPage(1)">Continue Our Story <i class="fas fa-arrow-right"></i></button>
+            
+            <div class="footer">
+                Made with ❤️ for My Jaan Natasha
+            </div>
+        </div>
+    </div>
+    
+    <!-- Page 2: Our Special Moments -->
+    <div class="page" id="page2">
+        <div class="container">
+            <div class="hearts" id="hearts2"></div>
+            
+            <h1>Our Precious Moments</h1>
+            
+            <div class="memory-container">
+                <div class="memory">
+                    <div class="memory-icon">
+                        <i class="fas fa-car-side"></i>
+                    </div>
+                    <div class="memory-title">Journey from Tibba</div>
+                    <div class="memory-desc">That beautiful journey side by side from Aunty Sobia's house in Tibba. Even though we were just cousins then, I felt a special connection.</div>
+                </div>
+                
+                <div class="memory">
+                    <div class="memory-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="memory-title">Our First Hug</div>
+                    <div class="memory-desc">The moment we hugged for the first time. That embrace felt like home, like we were meant to be in each other's arms.</div>
+                </div>
+                
+                <div class="memory">
+                    <div class="memory-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="memory-title">Endless Chats</div>
+                    <div class="memory-desc">Our conversations that last for hours, where we share our dreams, fears, and everything in between.</div>
+                </div>
+            </div>
+            
+            <div class="message">
+                <p>These moments may seem small to others, but to me they're everything. They're the foundation of what I hope will be our forever.</p>
+            </div>
+            
+            <button class="next-btn" onclick="nextPage(2)">Continue <i class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
+    
+    <!-- Page 3: Romantic Tasks -->
+    <div class="page" id="page3">
+        <div class="container">
+            <div class="hearts" id="hearts3"></div>
+            
+            <h1>Little Tasks For My Love</h1>
+            
+            <div class="task-container">
+                <div class="task">
+                    <div class="task-title">
+                        <i class="fas fa-heart"></i>
+                        Task 1: Remember Our Firsts
+                    </div>
+                    <div class="task-desc">
+                        Close your eyes and remember our first conversation, our first laugh together, and our first moment of connection. These memories are the foundation of our beautiful story.
+                    </div>
+                </div>
+                
+                <div class="task">
+                    <div class="task-title">
+                        <i class="fas fa-star"></i>
+                        Task 2: Imagine Our Future
+                    </div>
+                    <div class="task-desc">
+                        Picture us together in the future - waking up next to each other, sharing our dreams over morning tea, and building a life filled with love and laughter.
+                    </div>
+                </div>
+                
+                <div class="task">
+                    <div class="task-title">
+                        <i class="fas fa-music"></i>
+                        Task 3: Feel the Music
+                    </div>
+                    <div class="task-desc">
+                        Think of a song that reminds you of us. Let the melody fill your heart and imagine us dancing to it on our special day.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="urdu-quote">
+                "تمھاری ہر بات دل کو چھو جاتی ہے، تمھاری ہر نظر روح کو بھا جاتی ہے"
+            </div>
+            <div class="urdu-translation">
+                "Your every word touches my heart, your every glance captivates my soul"
+            </div>
+            
+            <button class="next-btn" onclick="nextPage(3)">Continue to My Promise <i class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
+    
+    <!-- Page 4: The Proposal -->
+    <div class="page" id="page4">
+        <div class="container">
+            <div class="hearts" id="hearts4"></div>
+            
+            <h1>My Heart's Promise</h1>
+            
+            <div class="ring-animation">
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <div class="diamond"></div>
+            </div>
+            
+            <div class="urdu-quote">
+                "تم میرے دل کی دھڑکن ہو، تم میرے سانسوں کا سکون ہو"
+            </div>
+            <div class="urdu-translation">
+                "You are the heartbeat of my heart, you are the peace in my breaths"
+            </div>
+            
+            <div class="message">
+                <p>My dearest Natasha, from the moment our souls connected, I knew you were the missing piece of my heart. Our journey may have started as cousins, but destiny had other plans for us.</p>
+                
+                <p>Your voice echoes in my thoughts, your laughter is my favorite melody, and your presence in my life has transformed my world into something magical. Every message from you is a treasure I cherish.</p>
+                
+                <p>I want to wake up to your voice every morning, share my dreams with you every night, and build a lifetime of memories with you by my side.</p>
+            </div>
+            
+            <div class="proposal-box">
+                <div class="proposal-text">
+                    My Jaan, will you complete my world and become my forever?
+                </div>
+                
+                <div class="buttons">
+                    <button class="qabool-btn" onclick="proposalAccepted()">
+                        <i class="fas fa-heart"></i> QABOOL HAI!
+                    </button>
+                </div>
+            </div>
+            
+            <div class="signature">
+                With all my love and heart,<br>
+                Your ZOHAIB
+            </div>
+        </div>
+    </div>
+    
+    <!-- Page 5: Celebration -->
+    <div class="page" id="page5">
+        <div class="container">
+            <div class="hearts" id="hearts5"></div>
+            
+            <h1>My Heart Is Overflowing!</h1>
+            
+            <div class="wife-text">
+                I Am The Happiest Man Alive!
+            </div>
+            
+            <div class="urdu-quote">
+                "اب تو بس تم ہو، تم ہی ہو، ہر خوشی تم ہو، ہر آرزو تم ہو"
+            </div>
+            <div class="urdu-translation">
+                "Now it's only you, just you, every happiness is you, every desire is you"
+            </div>
+            
+            <div class="message">
+                <p>My beautiful Natasha, you've made me the happiest man in the world! This is just the beginning of our beautiful journey together.</p>
+                
+                <p>I promise to cherish every moment with you, to be your strength when you need it, and to love you more with each passing day. Our digital love story is now the foundation of our real-life forever.</p>
+                
+                <p>I can't wait to create countless memories with you, to hear your voice every day, and to build a life together beyond our screens.</p>
+            </div>
+            
+            <div class="couple-name">ZOSH Forever</div>
+            
+            <div class="footer">
+                Made with eternal love for my future wife Natasha | From your ZOHAIB
+            </div>
+        </div>
+    </div>
+    
+    <div class="celebration" id="celebration"></div>
+
+    <script>
+        // Create floating hearts for each page
+        function createHearts(pageId) {
+            const heartsContainer = document.getElementById(pageId);
+            const heartsCount = 20;
+            
+            for (let i = 0; i < heartsCount; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                
+                // Random position
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const delay = Math.random() * 5;
+                const duration = 5 + Math.random() * 5;
+                const size = 15 + Math.random() * 15;
+                
+                heart.style.left = `${left}%`;
+                heart.style.top = `${top}%`;
+                heart.style.animationDelay = `${delay}s`;
+                heart.style.animationDuration = `${duration}s`;
+                heart.style.width = `${size}px`;
+                heart.style.height = `${size}px`;
+                
+                heartsContainer.appendChild(heart);
+            }
+        }
+        
+        // Page navigation
+        let currentPage = 1;
+        
+        function nextPage(fromPage) {
+            if (fromPage !== currentPage) return;
+            
+            document.getElementById(`page${currentPage}`).classList.remove('active');
+            currentPage++;
+            document.getElementById(`page${currentPage}`).classList.add('active');
+            
+            // Special handling for page 4
+            if (currentPage === 4) {
+                startQaboolHaiAnimation();
+            }
+        }
+        
+        // Qabool Hai animation
+        function startQaboolHaiAnimation() {
+            const qaboolText = document.getElementById('qaboolText');
+            let count = 0;
+            
+            const animation = setInterval(() => {
+                count++;
+                qaboolText.style.transform = 'scale(1.2)';
+                qaboolText.style.color = count % 2 === 0 ? 'var(--primary)' : 'var(--accent)';
+                
+                setTimeout(() => {
+                    qaboolText.style.transform = 'scale(1)';
+                }, 500);
+                
+                if (count >= 6) {
+                    clearInterval(animation);
+                    qaboolText.style.color = 'var(--primary)';
+                    qaboolText.style.animation = 'pulse 2s infinite';
+                }
+            }, 1000);
+        }
+        
+        // When "QABOOL HAI" is clicked
+        function proposalAccepted() {
+            // Create celebration effect with hearts
+            createHeartCelebration();
+            
+            // Show celebration message
+            setTimeout(() => {
+                document.getElementById('page4').classList.remove('active');
+                document.getElementById('page5').classList.add('active');
+                createHeartCelebration();
+            }, 2000);
+        }
+        
+        // Create heart celebration effect
+        function createHeartCelebration() {
+            const celebration = document.getElementById('celebration');
+            celebration.style.display = 'block';
+            
+            // Create celebration hearts
+            for (let i = 0; i < 150; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('celebration-heart');
+                
+                // Random color
+                const colors = ['var(--primary)', 'var(--secondary)', 'var(--accent)', '#ff9a9e', '#fd79a8'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                heart.style.background = color;
+                heart.style.setProperty('--heart-color', color);
+                
+                // Random position and animation
+                const left = Math.random() * 100;
+                const duration = 3 + Math.random() * 3;
+                const delay = Math.random() * 5;
+                const size = 20 + Math.random() * 20;
+                
+                heart.style.left = `${left}%`;
+                heart.style.animationDuration = `${duration}s`;
+                heart.style.animationDelay = `${delay}s`;
+                heart.style.width = `${size}px`;
+                heart.style.height = `${size}px`;
+                
+                // Apply same color to pseudo-elements
+                const style = document.createElement('style');
+                style.textContent = `
+                    .celebration-heart:nth-child(${i+1}):before, 
+                    .celebration-heart:nth-child(${i+1}):after {
+                        background: ${color};
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                celebration.appendChild(heart);
+                
+                // Remove heart after animation
+                setTimeout(() => {
+                    heart.remove();
+                    style.remove();
+                }, 8000);
+            }
+        }
+        
+        // Initialize the page
+        window.onload = function() {
+            createHearts('hearts1');
+            createHearts('hearts2');
+            createHearts('hearts3');
+            createHearts('hearts4');
+            createHearts('hearts5');
+        };
+    </script>
+</body>
+</html>
